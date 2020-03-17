@@ -1,6 +1,7 @@
 #include <PubSubClient.h>
 #include "WiFiManager.h"
 #include <ESP8266WiFi.h> //https://github.com/esp8266/Arduino
+#include <Servo.h>
 
 //needed for library
 #include <DNSServer.h>
@@ -11,6 +12,7 @@
 #define motorPinRightSpeed 5 //D1
 #define motorPinLeftDir 2
 #define motorPinLeftSpeed 4
+#define servopin 13
 
 const char *mqtt_server = "maqiatto.com";
 const char *topic = "martin.pind@abbindustrigymnasium.se/motor";
@@ -19,6 +21,7 @@ const char *pass = "loaldoaldoawldoakdfigvjosgoshnbos";
 
 WiFiClient espClient;
 PubSubClient client(espClient);
+Servo servo;
 
 void reconnect()
 {
@@ -58,6 +61,7 @@ void setup()
     pinMode(motorPinLeftSpeed, OUTPUT);
 
     Serial.begin(115200);
+    servo.attach(servopin);
 
     //WiFiManager
     //Local intialization. Once its business is done, there is no need to keep it around
@@ -153,17 +157,23 @@ void callback(char *topic, byte *payload, unsigned int length)
             Go(motorPinRightDir, motorPinRightSpeed, 0, 0);
         }
     }
+    else if (topicStr == "martin.pind@abbindustrigymnasium.se/servo")
+    {
+        int angle = payloadStr.toInt();
+        servo.write(angle);
+    }
 }
 
 void Go(int Dirpin, int Speedpin, int Direction, int Speed)
 {
     // if (Direction == 1)
-        // Serial.println("Framåt");
+    // Serial.println("Framåt");
     // else
-        // Serial.println("Bakåt");
+    // Serial.println("Bakåt");
 
-    if (Speed != 0){
-    Speed = map(Speed, 0, 100, 500, 1024);
+    if (Speed != 0)
+    {
+        Speed = map(Speed, 0, 100, 500, 1024);
     }
     // Serial.println("Hastighet: " + String(Speed));
 
