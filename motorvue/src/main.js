@@ -3,6 +3,9 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import vuetify from './plugins/vuetify';
+import VueGamepad from 'vue-gamepad';
+
+Vue.use(VueGamepad);
 
 Vue.config.productionTip = false
 
